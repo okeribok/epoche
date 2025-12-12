@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uncertainty Innovation Flashcards</title>
+<style>
+/* --- Print-Specific Styles --- */
+@media print {
+  @page {
+    /* Reduced margin to 3mm to ensure 3x3 layout fits on 210mm wide A4 */
+    size: A4;
+    margin: 3mm; 
+  }
+  body {
+    /* Remove padding/margin on body to rely entirely on @page margin */
+    margin: 0;
+    padding: 0;
+  }
+  /* Force a page break *after* the 9th card in the set */
+  .break-after-9th-card {
+    page-break-after: always;
+  }
+}
+
+/* --- General Styles --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Palatino Linotype", Palatino, Georgia, serif;
+  background: white;
+  /* Use 3mm body padding for screen view, 
+     but @media print overrides this to 0 (relying on @page) */
+  padding: 3mm; 
+}
+
+/* The .grid class is removed, the cards flow naturally */
+
+.card {
+  /* Use inline-block for predictable, non-grid-based flow */
+  display: inline-block;
+  
+  /* Fixed size for 3x3 layout on A4 */
+  width: 63mm;
+  height: 85mm;
+  
+  /* Added margin for spacing. 
+     The 2mm left/right margin acts as the 5mm gap between cards (4mm total gap) */
+  margin: 2mm 2mm 5mm 2mm; 
+  
+  background: white;
+  border: 1px solid #333;
+  padding: 5mm;
+  flex-direction: column; /* This is largely irrelevant now but kept for content structure */
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  vertical-align: top; /* Ensures cards align correctly in rows */
+}
+
+/* Card Content Styles (Unchanged) */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4mm;
+}
+
+.emoji {
+  font-size: 32px;
+  filter: grayscale(100%);
+  opacity: 0.6;
+  line-height: 1;
+}
+
+.code {
+  font-family: "Courier New", monospace;
+  font-size: 8px;
+  color: #666;
+  letter-spacing: 0.5px;
+}
+
+.statement {
+  /* Flex properties are now mostly just for vertical alignment */
+  flex: 1; 
+  font-size: 11pt;
+  line-height: 1.4;
+  color: #222;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  hyphens: auto;
+  /* Needs explicit height since card is inline-block */
+  height: calc(100% - 32px - 8mm - 12pt); 
+}
+
+.keyword {
+  position: absolute;
+  bottom: 6mm;
+  left: 6mm;
+  font-size: 8pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #999;
+}
+
+/* Button styles removed as they are irrelevant for the print issue */
+</style>
+</head>
+<body>
+
+<div id="cards-container"></div>
+
+<script>
+const cards = [
+  // Argument 1: Convergent Evolution Trap
+  { emoji: "🦕", keyword: "Story", statement: "Kodak, Blockbuster, Nokia - all followed industry best practices right off the cliff.", code: "A1.4" },
+  { emoji: "😨", keyword: "Fear", statement: "Your competitors are making identical bets. When they're wrong, you all lose together.", code: "A1.1" },
+  { emoji: "👑", keyword: "Pride", statement: "While others follow, you can lead by thinking differently.", code: "A1.2" },
+  { emoji: "📊", keyword: "Logic", statement: "Diversification theory applies to strategies, not just portfolios.", code: "A1.3" },
+  { emoji: "📈", keyword: "Data", statement: "Harvard research shows 87% of industry leaders use identical strategies.", code: "A1.5" },
+  { emoji: "🦬", keyword: "Analogy", statement: "It's like all the buffalo following the same path - efficient until the cliff.", code: "A1.6" },
+  { emoji: "❓", keyword: "Challenge", statement: "Can you name three strategic choices that differentiate you from competitors?", code: "A1.7" },
+  { emoji: "🔮", keyword: "Future", statement: "In 10 years, will this approach still create advantage?", code: "A1.8" },
+  { emoji: "🎭", keyword: "Identity", statement: "Are you a strategic leader or a strategic follower?", code: "A1.9" },
+  { emoji: "⚖️", keyword: "Paradox", statement: "The safest strategy is often the riskiest - when everyone does it.", code: "A1.10" },
+
+  // Argument 2: Optimization Ceiling
+  { emoji: "😤", keyword: "Frustration", statement: "You're working harder for smaller gains. There's a better way.", code: "A2.1" },
+  { emoji: "🚀", keyword: "Ambition", statement: "Incremental improvement is for incremental leaders.", code: "A2.2" },
+  { emoji: "💰", keyword: "Economics", statement: "ROI curves flatten. New curves offer exponential returns.", code: "A2.3" },
+  { emoji: "⚽", keyword: "Sports", statement: "Training harder using bad form just perfects the wrong technique.", code: "A2.4" },
+  { emoji: "⚡", keyword: "Physics", statement: "You've hit thermodynamic limits. Time to find new energy sources.", code: "A2.5" },
+  { emoji: "📞", keyword: "History", statement: "The telegraph companies perfected telegraph efficiency while phones emerged.", code: "A2.6" },
+  { emoji: "🤔", keyword: "Question", statement: "What if your current approach is fundamentally limited?", code: "A2.7" },
+  { emoji: "💡", keyword: "Resources", statement: "You're optimizing processes while competitors optimize possibilities.", code: "A2.8" },
+  { emoji: "⏰", keyword: "Time", statement: "Years of optimization can be leapfrogged in months of exploration.", code: "A2.9" },
+  { emoji: "🎖️", keyword: "Status", statement: "Optimization is operations. Exploration is leadership.", code: "A2.10" },
+
+  // Argument 3: Future Shock Immunity
+  { emoji: "💀", keyword: "Survival", statement: "Organizations that can't handle uncertainty don't survive disruption.", code: "A3.1" },
+  { emoji: "🏋️", keyword: "Fitness", statement: "Like immune systems - exposure to controlled uncertainty builds resistance.", code: "A3.2" },
+  { emoji: "⚔️", keyword: "Military", statement: "The army that trains only in known conditions loses to unknown warfare.", code: "A3.3" },
+  { emoji: "🧬", keyword: "Evolution", statement: "Adaptation beats optimization when environments change.", code: "A3.4" },
+  { emoji: "💉", keyword: "Medicine", statement: "Vaccines work by controlled exposure to uncertainty.", code: "A3.5" },
+  { emoji: "👶", keyword: "Learning", statement: "Children handle uncertainty better than adults - they practice it daily.", code: "A3.6" },
+  { emoji: "🎯", keyword: "Capability", statement: "Uncertainty tolerance is a core competency, not a nice-to-have.", code: "A3.7" },
+  { emoji: "🛡️", keyword: "Preparation", statement: "You can't prepare for specific unknowns, but you can build uncertainty fitness.", code: "A3.8" },
+  { emoji: "🌪️", keyword: "Advantage", statement: "When chaos hits, uncertain-ready organizations thrive while others panic.", code: "A3.9" },
+  { emoji: "🌱", keyword: "Culture", statement: "Organizations that normalize uncertainty navigate it naturally.", code: "A3.10" },
+
+  // Argument 4: First-Mover Advantage Decay
+  { emoji: "🏁", keyword: "Competition", statement: "While you perfect yesterday's solutions, someone else is inventing tomorrow's.", code: "A4.1" },
+  { emoji: "🌊", keyword: "Market", statement: "Blue ocean strategies require sailing into uncertain waters.", code: "A4.2" },
+  { emoji: "🥇", keyword: "Timing", statement: "Being second-best in a new space beats being first in a crowded one.", code: "A4.3" },
+  { emoji: "💵", keyword: "Economics", statement: "Virgin territory offers virgin profit margins.", code: "A4.4" },
+  { emoji: "♟️", keyword: "Chess", statement: "Playing your opponent's game means playing by their strengths.", code: "A4.5" },
+  { emoji: "🧭", keyword: "Exploration", statement: "Columbus didn't optimize existing trade routes - he found new continents.", code: "A4.6" },
+  { emoji: "💎", keyword: "Innovation", statement: "Every breakthrough started as someone's uncertain experiment.", code: "A4.7" },
+  { emoji: "🏰", keyword: "Monopoly", statement: "Temporary monopolies come from solving problems others haven't recognized yet.", code: "A4.8" },
+  { emoji: "⚡", keyword: "Speed", statement: "It's faster to create new categories than dominate existing ones.", code: "A4.9" },
+  { emoji: "📜", keyword: "Legacy", statement: "Do you want to be remembered as a follower or a pioneer?", code: "A4.10" },
+
+  // Argument 5: Sunk Cost Graveyard
+  { emoji: "🪤", keyword: "Trap", statement: "Your past investments are becoming future liabilities.", code: "A5.1" },
+  { emoji: "🕊️", keyword: "Freedom", statement: "Sunk costs are chains. Uncertainty work is liberation.", code: "A5.2" },
+  { emoji: "🏛️", keyword: "Archaeology", statement: "You're maintaining monuments to obsolete thinking.", code: "A5.3" },
+  { emoji: "🎯", keyword: "Physics", statement: "Momentum in the wrong direction is worse than standing still.", code: "A5.4" },
+  { emoji: "💸", keyword: "Investment", statement: "Good money chasing bad decisions compounds the problem.", code: "A5.5" },
+  { emoji: "💊", keyword: "Addiction", statement: "You're addicted to methods that no longer serve you.", code: "A5.6" },
+  { emoji: "🏺", keyword: "Museum", statement: "Every organization becomes a museum of its former success.", code: "A5.7" },
+  { emoji: "🔪", keyword: "Surgery", statement: "Sometimes you have to cut out healthy tissue to remove the tumor.", code: "A5.8" },
+  { emoji: "🦴", keyword: "Evolution", statement: "Successful species that can't adapt become successful fossils.", code: "A5.9" },
+  { emoji: "🚪", keyword: "Opportunity", statement: "Every dollar spent maintaining dead solutions can't fund living ones.", code: "A5.10" },
+
+  // Argument 6: Signal vs. Noise Blindness
+  { emoji: "📡", keyword: "Intelligence", statement: "You're optimizing for yesterday's signals while tomorrow's emerge unnoticed.", code: "A6.1" },
+  { emoji: "🎚️", keyword: "Radar", statement: "Your detection systems are tuned for threats that already passed.", code: "A6.2" },
+  { emoji: "🏄", keyword: "Surfing", statement: "By the time everyone sees the wave, it's too late to catch it.", code: "A6.3" },
+  { emoji: "🎖️", keyword: "Military", statement: "Generals always fight the last war - until they lose the next one.", code: "A6.4" },
+  { emoji: "🦁", keyword: "Nature", statement: "Animals that only recognize familiar dangers get eaten by unfamiliar predators.", code: "A6.5" },
+  { emoji: "🎵", keyword: "Music", statement: "You're listening to the echo while the original sound moves on.", code: "A6.6" },
+  { emoji: "🗺️", keyword: "Navigation", statement: "Using old maps guarantees getting lost in new territory.", code: "A6.7" },
+  { emoji: "🐾", keyword: "Hunting", statement: "Tracking footprints shows where prey was, not where it's going.", code: "A6.8" },
+  { emoji: "🌩️", keyword: "Weather", statement: "Meteorologists who only study past storms miss the hurricane forming.", code: "A6.9" },
+  { emoji: "🚗", keyword: "Vision", statement: "You're staring at the rearview mirror while driving toward the future.", code: "A6.10" },
+
+  // Argument 7: The Competency Trap
+  { emoji: "💪", keyword: "Paradox", statement: "Your greatest strengths are becoming your greatest weaknesses.", code: "A7.1" },
+  { emoji: "🥊", keyword: "Sports", statement: "The moves that made you champion won't work against new opponents.", code: "A7.2" },
+  { emoji: "🔨", keyword: "Tools", statement: "When all you have is a hammer, everything looks like a nail - even screws.", code: "A7.3" },
+  { emoji: "🎢", keyword: "Success", statement: "Success breeds confidence, confidence breeds rigidity, rigidity breeds failure.", code: "A7.4" },
+  { emoji: "🧠", keyword: "Learning", statement: "Expertise in obsolete skills is sophisticated ignorance.", code: "A7.5" },
+  { emoji: "🦖", keyword: "Biology", statement: "Overspecialization leads to extinction when environments change.", code: "A7.6" },
+  { emoji: "💼", keyword: "Career", statement: "Your core competencies might be core incompetencies tomorrow.", code: "A7.7" },
+  { emoji: "♟️", keyword: "Strategy", statement: "Yesterday's winning formula is today's losing proposition.", code: "A7.8" },
+  { emoji: "📷", keyword: "Innovation", statement: "Kodak was excellent at film when the world went digital.", code: "A7.9" },
+  { emoji: "🪞", keyword: "Identity", statement: "Are you defined by what you were good at or what you could become good at?", code: "A7.10" },
+
+  // Argument 8: Network Effect Multiplication
+  { emoji: "🕸️", keyword: "Systems", statement: "Point solutions create point value. System solutions create exponential value.", code: "A8.1" },
+  { emoji: "🏥", keyword: "Medicine", statement: "Treating symptoms individually misses the underlying health system.", code: "A8.2" },
+  { emoji: "🌉", keyword: "Engineering", statement: "A bridge that only connects one side serves no one.", code: "A8.3" },
+  { emoji: "📈", keyword: "Economics", statement: "Network effects turn single investments into multiple returns.", code: "A8.4" },
+  { emoji: "🌳", keyword: "Biology", statement: "Ecosystems are more resilient than individual organisms.", code: "A8.5" },
+  { emoji: "💻", keyword: "Technology", statement: "Platforms beat products because they enable other solutions.", code: "A8.6" },
+  { emoji: "♟️", keyword: "Chess", statement: "Moving one piece to threaten multiple positions changes the game.", code: "A8.7" },
+  { emoji: "🎼", keyword: "Music", statement: "Harmony emerges from notes that work together, not just individually.", code: "A8.8" },
+  { emoji: "🏛️", keyword: "Architecture", statement: "Great buildings solve multiple problems with single design elements.", code: "A8.9" },
+  { emoji: "📊", keyword: "Investment", statement: "Portfolio thinking: one asset addressing multiple risks pays compound dividends.", code: "A8.10" },
+
+  // Argument 9: Innovation Theater Problem
+  { emoji: "🎭", keyword: "Authenticity", statement: "You're performing innovation instead of practicing it.", code: "A9.1" },
+  { emoji: "👏", keyword: "Theater", statement: "Standing ovations don't measure actual progress.", code: "A9.2" },
+  { emoji: "💎", keyword: "Substance", statement: "Innovation labs without uncertainty tolerance are expensive decoration.", code: "A9.3" },
+  { emoji: "🔥", keyword: "Reality", statement: "Real innovation feels uncomfortable, not inspirational.", code: "A9.4" },
+  { emoji: "📏", keyword: "Measurement", statement: "You're measuring innovation inputs, not uncertainty outputs.", code: "A9.5" },
+  { emoji: "🏢", keyword: "Culture", statement: "Innovation isn't a department - it's a capability.", code: "A9.6" },
+  { emoji: "🎪", keyword: "Honesty", statement: "Calling something innovation doesn't make it innovative.", code: "A9.7" },
+  { emoji: "⚙️", keyword: "Process", statement: "Innovation processes that eliminate uncertainty eliminate innovation.", code: "A9.8" },
+  { emoji: "❌", keyword: "Results", statement: "Show me your failures, and I'll show you your innovation reality.", code: "A9.9" },
+  { emoji: "💰", keyword: "Investment", statement: "You're funding innovation theater while competitors fund actual innovation.", code: "A9.10" },
+
+  // Argument 10: Asymmetric Resilience
+  { emoji: "🏗️", keyword: "Engineering", statement: "Rigid structures shatter. Flexible structures bend and bounce back.", code: "A10.1" },
+  { emoji: "🌾", keyword: "Nature", statement: "Trees that don't bend in storms break. Grass survives hurricanes.", code: "A10.2" },
+  { emoji: "💹", keyword: "Finance", statement: "Robust portfolios crash together. Anti-fragile portfolios profit from volatility.", code: "A10.3" },
+  { emoji: "🏰", keyword: "Military", statement: "Fixed fortifications become targets. Mobile forces become advantages.", code: "A10.4" },
+  { emoji: "💪", keyword: "Health", statement: "Bodies that avoid all stress become weak. Bodies that manage stress become strong.", code: "A10.5" },
+  { emoji: "📚", keyword: "Learning", statement: "Students who only study easy material fail hard tests.", code: "A10.6" },
+  { emoji: "🎲", keyword: "Business", statement: "Companies that avoid all risk take the biggest risk of all.", code: "A10.7" },
+  { emoji: "🦎", keyword: "Evolution", statement: "Species that adapt to change outlive species that resist change.", code: "A10.8" },
+  { emoji: "🖥️", keyword: "Technology", statement: "Systems designed for perfection fail unperfectably. Systems designed for failure fail gracefully.", code: "A10.9" },
+  { emoji: "👔", keyword: "Leadership", statement: "Leaders who navigate uncertainty become indispensable. Leaders who avoid it become obsolete.", code: "A10.10" }
+];
+
+// Shuffle function (unchanged)
+function shuffle(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+// Create cards
+const shuffledCards = shuffle(cards);
+const container = document.getElementById('cards-container');
+
+shuffledCards.forEach((card, index) => {
+  const cardDiv = document.createElement('div');
+  cardDiv.className = 'card';
+  
+  // Add the break class to the 9th, 18th, 27th, etc. card,
+  // ONLY if it's not the last card in the whole list.
+  if ((index + 1) % 9 === 0 && index < shuffledCards.length - 1) {
+    cardDiv.classList.add('break-after-9th-card');
+  }
+  
+  cardDiv.innerHTML = `
+    <div class="card-header">
+      <div class="emoji">${card.emoji}</div>
+      <div class="code">${card.code}</div>
+    </div>
+    <div class="statement">${card.statement}</div>
+    <div class="keyword">${card.keyword}</div>
+  `;
+  
+  container.appendChild(cardDiv);
+  
+});
+</script>
+
+</body>
+</html>
